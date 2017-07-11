@@ -1,0 +1,60 @@
+{
+  "name": "exojs",
+  "version": "0.0.1",
+  "description": "Functional reactive state managmentand helpers for React",
+  "main": "build/index.js",
+  "scripts": {
+    "start": "watch 'npm run build' src",
+    "build": "babel src --out-dir build",
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "prepublish": "npm run build",
+    "release": "np"
+  },
+  "babel": {
+    "presets": [
+      "latest",
+      "react"
+    ],
+    "plugins": [
+      [
+        "transform-object-rest-spread",
+        {
+          "useBuiltIns": true
+        }
+      ]
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bnenu/exo.git"
+  },
+  "keywords": [
+    "react",
+    "rxjs",
+    "reactive",
+    "functional",
+    "state",
+    "management",
+    "helpers"
+  ],
+  "author": "Bogdan Nenu (http://bogdannenu.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bnenu/exo/issues"
+  },
+  "homepage": "https://github.com/bnenu/exo#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-latest": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "jest": "^20.0.4",
+    "np": "^2.16.0",
+    "watch": "^1.0.2"
+  },
+  "dependencies": {
+    "react": "^15.6.1",
+    "rxjs": "^5.4.1"
+  }
+}
