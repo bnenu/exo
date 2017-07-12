@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import connect from './connect.js'
-import action from './stream.js'
+import { action } from './stream.js'
 import compose from './compose'
 import withFunctions from './withFunctions'
 
