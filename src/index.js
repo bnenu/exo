@@ -7,7 +7,7 @@ export { default as pipe } from './packages/pipe'
 export { default as connect } from './packages/connect'
 export { default as either } from './packages/either'
 export { default as nest } from './packages/nest'
-import { createState, action } from './packages/stream'
+import createState, { action } from './packages/stream'
 export createState
 export action
 export { default as withDestructured } from './packages/withDestructured'
