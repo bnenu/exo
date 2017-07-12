@@ -43,5 +43,7 @@ const createStateStream = subject => initialState => reducer => {
   return state$
 }
 
-export const createState = createStateStream(stateSubject)
-export const action = createActionStream(stateSubject)
+export default {
+  createState: createStateStream(stateSubject),
+  action: createActionStream(stateSubject)
+}
