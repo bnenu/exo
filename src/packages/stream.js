@@ -1,6 +1,6 @@
 import Rx from 'rxjs'
 
-const isObservble = o => o instanceof Rx.Observable
+const isObservable = o => o instanceof Rx.Observable
 const stateSubject = new Rx.BehaviorSubject({})
 
 const createActionStream = subject => fn => (...args) => {
