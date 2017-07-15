@@ -7,12 +7,14 @@ import withFunctions from './withFunctions'
 const formActionCreator = type =>
   action(payload => ({ type, payload }))
 
+// forms actions
 export const formMount    = formActionCreator('@@EXO/FORM_MOUNTED')
 export const formChange   = formActionCreator('@@EXO/FORM_CHANGED')
 export const formError    = formActionCreator('@@EXO/FORM_ERROR')
 export const formSubmit   = formActionCreator('@@EXO/FORM_SUBMITED')
 export const formUnmount  = formActionCreator('@@EXO/FORM_UNMOUNTED')
 
+// forms state reducer
 export const forms = (state = {}, { type, payload }) => {
   switch(type) {
     case '@@EXO/FORM_MOUNTED':
@@ -30,28 +32,42 @@ export const forms = (state = {}, { type, payload }) => {
   }
 }
 
-const withFormState = (state$, selector) => (formName, validate) => Wrapped => {
-  const formStateSelector = state =>
-    selector
-      ? Object.assign({}, selector(state), { [formName]: state.forms[formName] })
-      : { [formName]: state.forms[formName] }
+const fStateSelector = formName => additionalSelector => state =>
+  additionalSelector
+    ? ({...additionalSelector(state), [formName]: state.forms[formName]})
+    : ({[formName]: state.forms[formName]})
 
+const fieldChange = (formName, validate) => props => event => {
+  const { name, value } = event.target
+  formChange({ formName, formField: { [name]: value }})
+  validate && formError({ fromName, errors: validate(props[formName]) })
+}
+
+const fileFieldChange = (fromName, validate) => props => event => {
+  const { name, files } = event.target
+  formChange({ formName, formField: { [name]: files[0] } })
+  validate && formError({ formName, errors: validate({ [name]: files[0] }) })
+}
+
+const submit = formName => props => cb => {
+  formSubmit({ formName })
+  cb()
+}
+
+// const formStateSelector = state =>
+//   selector
+//     ? Object.assign({}, selector(state), { [formName]: state.forms[formName] })
+//     : { [formName]: state.forms[formName] }
+
+const withFormState = (formName, validate) => (state$, selector) => Wrapped => {
   const enhance = compose(
     withFunctions({
-      onFieldChange: props => e => {
-        formChange({ formName: name, formField: { [e.target.name]: e.target.value } })
-        formError({ formName: name, errors: validate(this.props[name]) })
-      },
-      onFileFieldChange: props => e => {
-        formChange({ formName: name, formField: { [e.target.name]: e.target.files[0] } })
-        formError({ formName: name, errors: validate({ [e.target.name]: e.target.files[0] }) })
-      },
-      onSubmit(fn) {
-        formSubmit({ formName })
-        fn()
-      }
+      onFieldChange: fieldChange(formName, validate),
+      onFileFieldChange: fileFieldChange(formName, validate),
+      onSubmit: submit(formName)
     }),
-    connect(state$, formStateSelector)
+    //connect(state$, formStateSelector)
+    connect(state$, fStateSelector(formName)(selector))
   )
 
   class WFormState extends Component {

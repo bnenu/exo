@@ -6,8 +6,8 @@ const connect = (state$, selector = s => s) => Wrapped => {
   return class Connect extends React.Component {
     componentWillMount() {
       this.subscription = state$.map(selector).subscribe(
-        m => this.setState((prevState, props) => m),
-        err => console.log('subscribe error', err)
+        model => this.setState((prevState, props) => model),
+        err => console.log('State stream error: ', err)
       )
     }
 

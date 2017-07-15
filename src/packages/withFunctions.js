@@ -1,4 +1,5 @@
 import factory from './factory'
+import map from './map'
 
 const withFunctions = fnMap => Wrapped => {
   const c = factory(Wrapped)
