@@ -2,6 +2,14 @@ import Rx from 'rxjs'
 
 const isObservable = o => o instanceof Rx.Observable
 const stateSubject = new Rx.BehaviorSubject({})
+const applySideEffects = (...fns) => x => {
+  for(let fn of fns) {
+    if(typeof fn !== 'function') {
+      throw new Error('Side effects must be functions!')
+    }
+    fn(x.action, x.state)
+  }
+}
 
 const createActionStream = subject => fn => (...args) => {
   const actionObj = fn.call(null, ...args)
@@ -31,11 +39,21 @@ const createActionStream = subject => fn => (...args) => {
   return stream(actionObj)
 }
 
-const createStateStream = subject => initialState => reducer => {
-  let state$ = subject
+const createStateStream = (subject, applyEffects) => (initialState, ...fns) => reducer => {
+  const a$ = subject
     .startWith(initialState)
     .flatMap(a => isObservable(a) ? a : Rx.Observable.from([a]))
-    .scan(reducer)
+
+  const s$ = a$.scan(reducer)
+
+  const m$ = a$
+    .combineLatest(s$, (a, s) => ({ action: a, state: s }))
+    .do(applyEffects(...fns))
+    .pluck('state')
+
+  const temp$ = (fns && fns.length > 0) ? m$ : s$
+
+  let state$ = temp$
     .publishReplay(1)
 
   state$.connect()
@@ -43,7 +61,7 @@ const createStateStream = subject => initialState => reducer => {
   return state$
 }
 
-const createState = createStateStream(stateSubject)
+const createState = createStateStream(stateSubject, applySideEffects)
 const action = createActionStream(stateSubject)
 export {
   createState as default,

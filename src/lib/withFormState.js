@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import connect from './connect.js'
 import { action } from './stream.js'
-import compose from './compose'
+import compose from '../utils/compose'
 import withFunctions from './withFunctions'
 
 const formActionCreator = type =>

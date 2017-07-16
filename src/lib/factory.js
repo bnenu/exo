@@ -1,5 +1,5 @@
 import React from 'react'
-import isFunctionalComponent from './isFunctionalComponent'
+import isFunctionalComponent from '../utils/isFunctionalComponent'
 
 const factory = Wrapped => (props, children) => {
   if(isFunctionalComponent(Wrapped)) {

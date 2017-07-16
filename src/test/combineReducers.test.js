@@ -1,4 +1,4 @@
-import combineReducers from './combineReducers'
+import combineReducers from '../lib/combineReducers'
 
 const testReducers = {
   dummy: (state = 'DUMMY INIT', action) => {
