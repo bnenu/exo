@@ -1,4 +1,4 @@
-import { K, I, V } from '.utils/combinators'
+import { K, I, V } from './utils/combinators'
 
 
 test('K Combinator', () => {
