@@ -1,7 +1,5 @@
+import { K, I, V } from '.utils/combinators'
 
-const K = x => y => x
-const I = x => x
-const V = x => y => z => z(x)(y)
 
 test('K Combinator', () => {
   expect(K(true)(false)).toBe(true)
