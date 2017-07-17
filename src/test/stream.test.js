@@ -4,6 +4,10 @@ import combineReducers from '../lib/combineReducers'
 
 const app = (state = 'Empty', { type, payload }) => {
   switch(type) {
+    case 'REQ':
+      return { subst: payload }
+    case 'SUCCESS':
+      return { subst: payload }
     default:
       return state
   }
@@ -11,6 +15,22 @@ const app = (state = 'Empty', { type, payload }) => {
 
 const reducer = combineReducers({
   app
+})
+export const ROOTURL = 'http://app.chemrover.com/api'
+
+// dev api url
+//const ROOTURL = "http://188.215.51.53:8059/api"
+// const ROOTURL = "http://localhost:8059/api"
+const getItems = (endpoint, body) => Rx.Observable.ajax({
+  method: 'POST',
+  requestType: 'json',
+  headers: Object.assign(
+    {},
+    { 'Authorization': '' },
+    { 'Content-Type': 'application/json' }
+  ),
+  url: `${ROOTURL}/${endpoint}`,
+  body: body
 })
 
 test('Create stream without side effects', () => {
@@ -23,7 +43,23 @@ test('Create stream with side effects', () => {
   const s$ = createState({}, (a, b) => {
     expect(a).toBeDefined()
   })(reducer)
-  //action(a => ({ type: 'TEST', payload: a }))('An action')
-  const end = s$.subscribe((data) => data)
+  const end = s$.subscribe((data) => console.log(data))
+  action(a => ({ type: 'REQ', payload: a }))('An action')
   end.unsubscribe()
 })
+
+// test('Stream async actions from streams',  () => {
+//     const s$ = createState({})(reducer)
+//     const posts$ = Rx.Observable
+//       .ajax('https://jsonplaceholder.typicode.com/posts/1')
+//   //   .map(data => data.response)
+//   //   .catch(err => console.log(err))
+//   // posts$.subscribe(res => console.log(res))
+//   const end = s$.subscribe((data) => console.log(data))
+//   // action(s => ({
+//   //   type: 'REQ',
+//   //   payload: posts$
+//   //     .map(res => ({ type: 'SUCCESS', payload: res.response}))
+//   //     .catch(err => console.log(err))
+//   // }))()
+// })

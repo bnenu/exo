@@ -23,6 +23,7 @@ const createActionStream = subject => fn => (...args) => {
   }
 
   function stream(action) {
+    //console.log('Action in stream is: ', action)
     isObservable(action)
       ? subject.next(action)
       : action.type
@@ -30,6 +31,7 @@ const createActionStream = subject => fn => (...args) => {
         : subject.next({ type: 'MISSING_TYPE', payload: action })
 
     if(action.payload && isObservable(action.payload)) {
+      //console.log('-----> action.payload is stream ', action.payload)
       stream(action.payload)
     }
 
@@ -53,16 +55,15 @@ const createStateStream = (subject, applyEffects) => (initialState, ...fns) => r
 
   const temp$ = (fns && fns.length > 0) ? m$ : s$
 
-  let state$ = temp$
-    .publishReplay(1)
+  let state$ = temp$.publishReplay(1)
 
   state$.connect()
-
   return state$
 }
 
 const createState = createStateStream(stateSubject, applySideEffects)
 const action = createActionStream(stateSubject)
+
 export {
   createState as default,
   action

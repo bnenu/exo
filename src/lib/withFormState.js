@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import connect from './connect.js'
-import { action } from './stream.js'
+//import { action } from './stream.js'
 import compose from '../utils/compose'
 import withFunctions from './withFunctions'
 
-const formActionCreator = type =>
-  action(payload => ({ type, payload }))
+const formActionCreator = type => dispatch =>
+  dispatch(payload => ({ type, payload }))
 
 // forms actions
 export const formMount    = formActionCreator('@@EXO/FORM_MOUNTED')
@@ -37,20 +37,20 @@ const fStateSelector = formName => additionalSelector => state =>
     ? ({...additionalSelector(state), [formName]: state.forms[formName]})
     : ({[formName]: state.forms[formName]})
 
-const fieldChange = (formName, validate) => props => event => {
+const fieldChange = dispatch => (formName, validate) => props => event => {
   const { name, value } = event.target
-  formChange({ formName, formField: { [name]: value }})
-  validate && formError({ fromName, errors: validate(props[formName]) })
+  formChange(dispatch)({ formName, formField: { [name]: value }})
+  validate && formError(dispatch)({ formName, errors: validate(props[formName]) })
 }
 
-const fileFieldChange = (fromName, validate) => props => event => {
+const fileFieldChange = dispatch => (formName, validate) => props => event => {
   const { name, files } = event.target
-  formChange({ formName, formField: { [name]: files[0] } })
-  validate && formError({ formName, errors: validate({ [name]: files[0] }) })
+  formChange(dispatch)({ formName, formField: { [name]: files[0] } })
+  validate && formError(dispatch)({ formName, errors: validate({ [name]: files[0] }) })
 }
 
-const submit = formName => props => cb => {
-  formSubmit({ formName })
+const submit = dispatch => formName => props => cb => {
+  formSubmit(dispatch)({ formName })
   cb()
 }
 
@@ -59,12 +59,12 @@ const submit = formName => props => cb => {
 //     ? Object.assign({}, selector(state), { [formName]: state.forms[formName] })
 //     : { [formName]: state.forms[formName] }
 
-const withFormState = (formName, validate) => (state$, selector) => Wrapped => {
+const withFormState = (formName, validate) => (state$, dispatch, selector) => Wrapped => {
   const enhance = compose(
     withFunctions({
-      onFieldChange: fieldChange(formName, validate),
-      onFileFieldChange: fileFieldChange(formName, validate),
-      onSubmit: submit(formName)
+      onFieldChange: fieldChange(dispatch)(formName, validate),
+      onFileFieldChange: fileFieldChange(dispatch)(formName, validate),
+      onSubmit: submit(dispatch)(formName)
     }),
     //connect(state$, formStateSelector)
     connect(state$, fStateSelector(formName)(selector))
