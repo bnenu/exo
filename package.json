@@ -1,6 +1,6 @@
 {
   "name": "exojs",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Functional reactive state managmentand helpers for React",
   "main": "build/index.js",
   "scripts": {
