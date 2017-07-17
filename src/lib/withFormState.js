@@ -8,11 +8,11 @@ const formActionCreator = type => dispatch =>
   dispatch(payload => ({ type, payload }))
 
 // forms actions
-export const formMount    = formActionCreator('@@EXO/FORM_MOUNTED')
-export const formChange   = formActionCreator('@@EXO/FORM_CHANGED')
-export const formError    = formActionCreator('@@EXO/FORM_ERROR')
-export const formSubmit   = formActionCreator('@@EXO/FORM_SUBMITED')
-export const formUnmount  = formActionCreator('@@EXO/FORM_UNMOUNTED')
+const formMount    = formActionCreator('@@EXO/FORM_MOUNTED')
+const formChange   = formActionCreator('@@EXO/FORM_CHANGED')
+const formError    = formActionCreator('@@EXO/FORM_ERROR')
+const formSubmit   = formActionCreator('@@EXO/FORM_SUBMITED')
+const formUnmount  = formActionCreator('@@EXO/FORM_UNMOUNTED')
 
 // forms state reducer
 export const forms = (state = {}, { type, payload }) => {
@@ -72,10 +72,10 @@ const withFormState = (formName, validate) => (state$, dispatch, selector) => Wr
 
   class WFormState extends Component {
     componentWillMount() {
-      formMount({ formName })
+      formMount(dispatch)({ formName })
     }
     componentWillUnmount() {
-      formUnmount({ formName })
+      formUnmount(dispatch)({ formName })
     }
     render() {
       return <Wrapped { ...this.props }/>
