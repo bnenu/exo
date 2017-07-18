@@ -14,6 +14,7 @@ export { default as generateModel } from './lib/stream'
 
 export { default as withDestructured } from './lib/withDestructured'
 export { default as withFunctions } from './lib/withFunctions'
+export { default as withStreamActions } from './lib/withStreamActions'
 
 import withFormState,  { forms } from './lib/withFormState'
 export { withFormState, forms }

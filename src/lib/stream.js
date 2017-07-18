@@ -59,19 +59,19 @@ const createStateStream = (subject, applyEffects) => (initialState, ...fns) => r
   return state$
 }
 
-function Model(rxSubject) {
-  this.subject = rxSubject
-  this.createState = createStateStream(this.subject, applySideEffects)
-  this.action = createActionStream(this.subject)
-}
+// function Model(rxSubject) {
+//   this.subject = rxSubject
+//   this.createState = createStateStream(this.subject, applySideEffects)
+//   this.action = createActionStream(this.subject)
+// }
 
-// const generateModel = stateSubject => ({
-//   createState: createStateStream(stateSubject, applySideEffects),
-//   action: createActionStream(stateSubject)
-// })
+const generateModel = stateSubject => ({
+  createState: createStateStream(stateSubject, applySideEffects),
+  action: createActionStream(stateSubject)
+})
 
-const generateModel = function generateModel(subject) {
-  return new Model(subject)
-}
+// const generateModel = function generateModel(subject) {
+//   return new Model(subject)
+// }
 
 export default generateModel 
