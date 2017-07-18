@@ -16,25 +16,26 @@ const app = (state = 'Empty', { type, payload }) => {
 const reducer = combineReducers({
   app
 })
-export const ROOTURL = 'http://app.chemrover.com/api'
+// export const ROOTURL = 'http://app.chemrover.com/api'
 
 // dev api url
 //const ROOTURL = "http://188.215.51.53:8059/api"
 // const ROOTURL = "http://localhost:8059/api"
-const getItems = (endpoint, body) => Rx.Observable.ajax({
-  method: 'POST',
-  requestType: 'json',
-  headers: Object.assign(
-    {},
-    { 'Authorization': '' },
-    { 'Content-Type': 'application/json' }
-  ),
-  url: `${ROOTURL}/${endpoint}`,
-  body: body
-})
+// const getItems = (endpoint, body) => Rx.Observable.ajax({
+//   method: 'POST',
+//   requestType: 'json',
+//   headers: Object.assign(
+//     {},
+//     { 'Authorization': '' },
+//     { 'Content-Type': 'application/json' }
+//   ),
+//   url: `${ROOTURL}/${endpoint}`,
+//   body: body
+// })
 
 test('Create stream without side effects', () => {
   const model = generateModel(new Rx.BehaviorSubject({}))
+  //console.log(model)
   const s$ = model.createState({})(reducer)
   const end = s$.subscribe(data => expect(data.app).toBe('Empty'))
   end.unsubscribe()

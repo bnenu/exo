@@ -70,7 +70,7 @@ function Model(rxSubject) {
 //   action: createActionStream(stateSubject)
 // })
 
-function generateModel(subject) {
+const generateModel = function generateModel(subject) {
   return new Model(subject)
 }
 
