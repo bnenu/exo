@@ -1,7 +1,7 @@
 import Rx from 'rxjs'
 
 const isObservable = o => o instanceof Rx.Observable
-const stateSubject = new Rx.BehaviorSubject({})
+//const stateSubject = new Rx.BehaviorSubject({})
 const applySideEffects = (...fns) => x => {
   for(let fn of fns) {
     if(typeof fn !== 'function') {
@@ -23,7 +23,6 @@ const createActionStream = subject => fn => (...args) => {
   }
 
   function stream(action) {
-    //console.log('Action in stream is: ', action)
     isObservable(action)
       ? subject.next(action)
       : action.type
@@ -31,7 +30,6 @@ const createActionStream = subject => fn => (...args) => {
         : subject.next({ type: 'MISSING_TYPE', payload: action })
 
     if(action.payload && isObservable(action.payload)) {
-      //console.log('-----> action.payload is stream ', action.payload)
       stream(action.payload)
     }
 
@@ -64,7 +62,9 @@ const createStateStream = (subject, applyEffects) => (initialState, ...fns) => r
 const createState = createStateStream(stateSubject, applySideEffects)
 const action = createActionStream(stateSubject)
 
-export {
-  createState as default,
-  action
-}
+const generateModel = stateSubject => ({
+  createState: createStateStream(stateSubject, applySideEffects),
+  action: createActionStream(stateSubject)
+})
+
+export default generateModel 

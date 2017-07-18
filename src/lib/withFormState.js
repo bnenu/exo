@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import connect from './connect.js'
-//import { action } from './stream.js'
 import compose from '../utils/compose'
 import withFunctions from './withFunctions'
 
@@ -53,11 +52,6 @@ const submit = dispatch => formName => props => cb => {
   formSubmit(dispatch)({ formName })
   cb()
 }
-
-// const formStateSelector = state =>
-//   selector
-//     ? Object.assign({}, selector(state), { [formName]: state.forms[formName] })
-//     : { [formName]: state.forms[formName] }
 
 const withFormState = (formName, validate) => (state$, dispatch, selector) => Wrapped => {
   const enhance = compose(

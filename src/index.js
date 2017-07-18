@@ -8,13 +8,14 @@ export { default as connect } from './lib/connect'
 export { default as either } from './lib/either'
 export { default as nest } from './lib/nest'
 
-import createState, { action } from './lib/stream'
-export { createState, action }
+export { default as generateModel } from './lib/stream'
+//import createState, { action } from './lib/stream'
+//export { createState, action }
 
 export { default as withDestructured } from './lib/withDestructured'
 export { default as withFunctions } from './lib/withFunctions'
 
-import withFormState,  { forms, formMount, formChange, formSubmit, formError, formUnmount } from './lib/withFormState'
-export { withFormState, forms, formMount, formChange, formSubmit, formError, formUnmount }
+import withFormState,  { forms } from './lib/withFormState'
+export { withFormState, forms }
 
 export { default as withProp } from './lib/withProp'
