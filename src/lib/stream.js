@@ -59,9 +59,6 @@ const createStateStream = (subject, applyEffects) => (initialState, ...fns) => r
   return state$
 }
 
-const createState = createStateStream(stateSubject, applySideEffects)
-const action = createActionStream(stateSubject)
-
 const generateModel = stateSubject => ({
   createState: createStateStream(stateSubject, applySideEffects),
   action: createActionStream(stateSubject)

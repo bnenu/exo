@@ -1,5 +1,5 @@
 import Rx from 'rxjs'
-import createState, { action } from '../lib/stream'
+import generateModel from '../lib/stream'
 import combineReducers from '../lib/combineReducers'
 
 const app = (state = 'Empty', { type, payload }) => {
@@ -34,32 +34,35 @@ const getItems = (endpoint, body) => Rx.Observable.ajax({
 })
 
 test('Create stream without side effects', () => {
-  const s$ = createState({})(reducer)
+  const model = generateModel(new Rx.BehaviorSubject({}))
+  const s$ = model.createState({})(reducer)
   const end = s$.subscribe(data => expect(data.app).toBe('Empty'))
   end.unsubscribe()
 })
 
 test('Create stream with side effects', () => {
-  const s$ = createState({}, (a, b) => {
+  const model = generateModel(new Rx.BehaviorSubject({}))
+  const s$ = model.createState({}, (a, b) => {
     expect(a).toBeDefined()
   })(reducer)
   const end = s$.subscribe((data) => console.log(data))
-  action(a => ({ type: 'REQ', payload: a }))('An action')
+  model.action(a => ({ type: 'REQ', payload: a }))('An action')
   end.unsubscribe()
 })
 
 // test('Stream async actions from streams',  () => {
-//     const s$ = createState({})(reducer)
-//     const posts$ = Rx.Observable
-//       .ajax('https://jsonplaceholder.typicode.com/posts/1')
+//   const model = generateModel(new Rx.BehaviorSubject({}))
+//   const s$ = model.createState({})(reducer)
+//   const posts$ = Rx.Observable
+//     .ajax('https://jsonplaceholder.typicode.com/posts/1')
 //   //   .map(data => data.response)
 //   //   .catch(err => console.log(err))
 //   // posts$.subscribe(res => console.log(res))
 //   const end = s$.subscribe((data) => console.log(data))
-//   // action(s => ({
-//   //   type: 'REQ',
-//   //   payload: posts$
-//   //     .map(res => ({ type: 'SUCCESS', payload: res.response}))
-//   //     .catch(err => console.log(err))
-//   // }))()
+//   model.action(s => ({
+//     type: 'REQ',
+//     payload: posts$
+//       .map(res => ({ type: 'SUCCESS', payload: res.response}))
+//       .catch(err => console.log(err))
+//   }))()
 // })
