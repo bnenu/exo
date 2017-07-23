@@ -40,18 +40,21 @@ const createActionStream = subject => fn => (...args) => {
 }
 
 const createStateStream = (subject, applyEffects) => (initialState, ...fns) => reducer => {
+  const sideEffectsReducer = (state, action) => {
+    const newState = reducer(state, action)
+    applyEffects(...fns)({ state: newState, action })
+    return newState
+  }
+  
   const a$ = subject
     .startWith(initialState)
     .flatMap(a => isObservable(a) ? a : Rx.Observable.from([a]))
 
-  const s$ = a$.scan(reducer)
+  const simple$ = a$.scan(reducer)
 
-  const m$ = a$
-    .combineLatest(s$, (a, s) => ({ action: a, state: s }))
-    .do(applyEffects(...fns))
-    .pluck('state')
+  const withSideEffects$ = a$.scan(sideEffectsReducer)
 
-  const temp$ = (fns && fns.length > 0) ? m$ : s$
+  const temp$ = (fns && fns.length > 0) ? withSideEffects$ : simple$
 
   let state$ = temp$.publishReplay(1)
 
@@ -59,19 +62,9 @@ const createStateStream = (subject, applyEffects) => (initialState, ...fns) => r
   return state$
 }
 
-// function Model(rxSubject) {
-//   this.subject = rxSubject
-//   this.createState = createStateStream(this.subject, applySideEffects)
-//   this.action = createActionStream(this.subject)
-// }
-
 const generateModel = stateSubject => ({
   createState: createStateStream(stateSubject, applySideEffects),
   action: createActionStream(stateSubject)
 })
-
-// const generateModel = function generateModel(subject) {
-//   return new Model(subject)
-// }
 
 export default generateModel 

@@ -8,6 +8,7 @@ const withState = (stateName, initialState) => Wrapped => {
     constructor(props) {
       super(props)
       this.state = { localState: initialState }
+      this.updateLocalState = this.updateLocalState.bind(this)
     }
 
     updateLocalState(updater, cb) {
