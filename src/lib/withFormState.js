@@ -17,7 +17,7 @@ const formUnmount  = formActionCreator('@@EXO/FORM_UNMOUNTED')
 export const forms = (state = {}, { type, payload }) => {
   switch(type) {
     case '@@EXO/FORM_MOUNTED':
-      return { ...state, [payload.formName]: { errors: {} }}
+      return { ...state, [payload.formName]: { ...payload.initialData, errors: {} }}
     case '@@EXO/FORM_CHANGED':
       return { ...state, [payload.formName]: Object.assign({}, state[payload.formName], payload.formField) }
     case '@@EXO/FORM_ERROR':
@@ -53,7 +53,7 @@ const submit = dispatch => formName => props => cb => {
   cb()
 }
 
-const withFormState = (formName, validate) => (state$, dispatch, selector) => Wrapped => {
+const withFormState = (formName, initialData, validate) => (state$, dispatch, selector) => Wrapped => {
   const enhance = compose(
     withFunctions({
       onFieldChange: fieldChange(dispatch)(formName, validate),
@@ -66,7 +66,7 @@ const withFormState = (formName, validate) => (state$, dispatch, selector) => Wr
 
   class WFormState extends Component {
     componentWillMount() {
-      formMount(dispatch)({ formName })
+      formMount(dispatch)({ formName, initialData })
     }
     componentWillUnmount() {
       formUnmount(dispatch)({ formName })
