@@ -7,17 +7,20 @@ const formActionCreator = type => dispatch =>
   dispatch(payload => ({ type, payload }))
 
 // forms actions
-const formMount    = formActionCreator('@@EXO/FORM_MOUNTED')
-const formChange   = formActionCreator('@@EXO/FORM_CHANGED')
-const formError    = formActionCreator('@@EXO/FORM_ERROR')
-const formSubmit   = formActionCreator('@@EXO/FORM_SUBMITED')
-const formUnmount  = formActionCreator('@@EXO/FORM_UNMOUNTED')
+const formMount       = formActionCreator('@@EXO/FORM_MOUNTED')
+const formChange      = formActionCreator('@@EXO/FORM_CHANGED')
+const formError       = formActionCreator('@@EXO/FORM_ERROR')
+const formSubmit      = formActionCreator('@@EXO/FORM_SUBMITED')
+const formUnmount     = formActionCreator('@@EXO/FORM_UNMOUNTED')
+export const setFormInitialData = formActionCreator('@@EXO/FORM_INIT_DATA')
 
 // forms state reducer
 export const forms = (state = {}, { type, payload }) => {
   switch(type) {
     case '@@EXO/FORM_MOUNTED':
-      return { ...state, [payload.formName]: { ...payload.initialData, errors: {} }}
+      return { ...state, [payload.formName]: { errors: {} }}
+    case '@@EXO/FORM_INIT_DATA':
+      return { ...state, [payload.formName]: { ...state[payload.formName], ...payload.initialData }}
     case '@@EXO/FORM_CHANGED':
       return { ...state, [payload.formName]: Object.assign({}, state[payload.formName], payload.formField) }
     case '@@EXO/FORM_ERROR':
@@ -53,7 +56,7 @@ const submit = dispatch => formName => props => cb => {
   cb()
 }
 
-const withFormState = (formName, initialData, validate) => (state$, dispatch, selector) => Wrapped => {
+const withFormState = (formName, validate) => (state$, dispatch, selector) => Wrapped => {
   const enhance = compose(
     withFunctions({
       onFieldChange: fieldChange(dispatch)(formName, validate),
@@ -66,7 +69,7 @@ const withFormState = (formName, initialData, validate) => (state$, dispatch, se
 
   class WFormState extends Component {
     componentWillMount() {
-      formMount(dispatch)({ formName, initialData })
+      formMount(dispatch)({ formName })
     }
     componentWillUnmount() {
       formUnmount(dispatch)({ formName })
